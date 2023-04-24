@@ -203,6 +203,7 @@ end;
 procedure TFormEnterUser.TimerNameLangTimer(Sender: TObject);
 begin
   LabelKeyboardLayout.Caption:= NameKeyboardLayout(GetActiveKbdLayoutWnd);
+
 end;
 
 end.

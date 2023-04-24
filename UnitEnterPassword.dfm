@@ -50,13 +50,11 @@ object FormEnterUser: TFormEnterUser
     000003FF000003EF000000FE000080DF0000C0030000E0010000F0000000F800
     0000F8000000F8000000F0000000F8000000F8000000FC010000FE030000}
   KeyPreview = True
-  OldCreateOrder = False
   Position = poMainFormCenter
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyPress = FormKeyPress
   OnShow = FormShow
-  PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
     Left = 155
