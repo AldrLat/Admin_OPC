@@ -714,7 +714,7 @@ begin
         begin
           if FileExists(PathFileNameOPCHDAServer) then
             begin
-              if DM.RunAsAdmin(Handle, PathFileNameOPCHDAServer, ' /unregserver', hProcess) then
+              if DM.RunAsAdmin(Handle, PathFileNameOPCHDAServer, ' /unregserver /OPC_HDA', hProcess) then
                 begin
                   if hProcess <> 0 then
                     if WaitForSingleObject(hProcess, 5000) <> WAIT_OBJECT_0 then
