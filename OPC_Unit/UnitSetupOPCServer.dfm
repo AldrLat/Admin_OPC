@@ -5720,6 +5720,7 @@ object FormSetupOpcServer: TFormSetupOpcServer
         Caption = 'ToolButton2'
         ImageIndex = 2
         Style = tbsSeparator
+        Visible = False
       end
       object ToolButtonConnectOPCServer: TToolButton
         Left = 57
@@ -5731,6 +5732,7 @@ object FormSetupOpcServer: TFormSetupOpcServer
         ImageIndex = 2
         ParentShowHint = False
         ShowHint = True
+        Visible = False
       end
       object ToolButtonDisconnectOPCServer: TToolButton
         Left = 82
@@ -5742,6 +5744,7 @@ object FormSetupOpcServer: TFormSetupOpcServer
         ImageIndex = 3
         ParentShowHint = False
         ShowHint = True
+        Visible = False
       end
       object ToolButton1: TToolButton
         Left = 107
@@ -5833,8 +5836,6 @@ object FormSetupOpcServer: TFormSetupOpcServer
         OnChange = TreeViewOPCServerChange
         OnClick = TreeViewOPCServerClick
         OnMouseDown = TreeViewOPCServerMouseDown
-        ExplicitLeft = -4
-        ExplicitTop = 90
       end
       object RadioButtonAllOPCServer: TRadioButton
         Left = 16
