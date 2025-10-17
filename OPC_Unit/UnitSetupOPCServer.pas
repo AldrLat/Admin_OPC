@@ -886,6 +886,7 @@ begin
   EditServerName.Clear;
   EditUserType.Clear;
   EditGUID.Clear;
+  TreeViewBrowseTag.Items.Clear;
 end;
 
 procedure TFormSetupOpcServer.FormShow(Sender: TObject);

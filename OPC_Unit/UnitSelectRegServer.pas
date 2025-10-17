@@ -16,7 +16,11 @@ type
     procedure FormCreate(Sender: TObject);
     procedure ButtonOKClick(Sender: TObject);
     procedure ButtonExitClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure CheckBoxDAClick(Sender: TObject);
+    procedure CheckBoxHDAClick(Sender: TObject);
   private
+    procedure SetEnabledButtonOK;
     { Private declarations }
   public
     { Public declarations }
@@ -43,51 +47,22 @@ procedure TFormRegOPCServers.ButtonOKClick(Sender: TObject);
       strText: string;
       bErrDA, bErrHDA: boolean;    //TRUE - значит есть ошибка
 begin
-  if (not CheckBoxDA.Checked) and (not CheckBoxHDA.Checked) then
-    begin
-      Application.MessageBox(PChar('Для регистрации нет выбранного сервера.'),
-                             PChar(ProgName_ShortStringVersion + ' ОШИБКА !!!'),
-                             MB_OK + MB_ICONERROR);
-      exit;
-    end;
-
   strText:= '';
-  if CheckBoxDA.Checked then strText:= '"' + OPCDAUserServerName + '"';
+  bErrDA:= false;
+  bErrHDA:= false;
+
+  if CheckBoxDA.Checked then strText:= #10#13 + '"' + OPCDAUserServerName + '"';
   if CheckBoxHDA.Checked then
     begin
-      if CheckBoxDA.Checked then strText:= strText + ' и "' + OPCHDAUserServerName + '"'
-                            else strText:= '"' + OPCHDAUserServerName + '"'
+      if CheckBoxDA.Checked then strText:= strText + #10#13 + '"' + OPCHDAUserServerName + '"'
+                            else strText:= #10#13 + '"' + OPCHDAUserServerName + '"'
     end;
 
   if Application.MessageBox(PChar('Зарегистрировать OPC-сервер(ы) ' + strText + '?'),
                              PChar(ProgName_ShortStringVersion + ' ВНИМАНИЕ !!!'),
                              MB_YESNO + MB_ICONQUESTION) = IDYES then
     begin
-      //для того чтобы не зарегистрировать второй сервер
-      strText:= '';
-      bErrDA:= false;
-      bErrHDA:= false;
-
-      if CheckBoxDA.Checked and (e.ProgIDFromCLSID(GUID_RudaOPCDA, tempServerName) = S_OK) then
-        begin
-          strText:= 'СКРП OPC DA - сервер уже зарегистрирован.' + #10#13;
-          bErrDA:= true;
-        end;
-
-      if CheckBoxHDA.Checked and (e.ProgIDFromCLSID(GUID_RudaOPCHDA, tempServerName) = S_OK) then
-        begin
-          strText:= strText + 'СКРП OPC HDA - сервер уже зарегистрирован.' + #10#13;
-          bErrHDA:= true;
-        end;
-
-      if strText <> '' then
-        begin
-          Application.MessageBox(PChar(strText +
-            'Чтобы перерегистрировать СКРП OPC-сервер(ы) необходимо удалить предыдущий(е) сервер(ы).'),
-            'ВНИМАНИЕ!!!', MB_OK or MB_ICONERROR);
-        end;
-
-      if CheckBoxDA.Checked and (not bErrDA) then //регистрируем DA сервер
+      if CheckBoxDA.Checked then //регистрируем DA сервер
         if FileExists(PathFileNameOPCDAServer) then
           begin
             if DM.RunAsAdmin(Handle, PathFileNameOPCDAServer, ' /regserver /OPC_DA', hProcess) then
@@ -98,20 +73,23 @@ begin
                       CloseHandle(hProcess);
                       Application.MessageBox(PChar('Не удалось зарегистрировать OPC-сервер "' + OPCDAUserServerName +
                         '". Истекло время ожидания на регистрацию сервера.'), 'Ошибка', MB_OK or MB_ICONERROR);
+                      bErrDA:= true;
                     end;
               end
               else begin
                 Application.MessageBox(PChar('Ошибка регистрации OPC-сервера "' + OPCDAUserServerName + '"'),
                     'Ошибка', MB_OK or MB_ICONERROR);
+                bErrDA:= true;
               end;
           end
           else begin
             Application.MessageBox(PChar('Файл "' + PathFileNameOPCDAServer +
               '" не найден. Невозможно зарегистрировать OPC DA сервер.'),
               'Ошибка', MB_OK or MB_ICONERROR);
+            bErrDA:= true;
           end;
 
-      if CheckBoxHDA.Checked and (not bErrHDA) then //регистрируем HDA сервер
+      if CheckBoxHDA.Checked then //регистрируем HDA сервер
         if FileExists(PathFileNameOPCHDAServer) then
           begin
             if DM.RunAsAdmin(Handle, PathFileNameOPCHDAServer, ' /regserver /OPC_HDA', hProcess) then
@@ -122,17 +100,20 @@ begin
                       CloseHandle(hProcess);
                       Application.MessageBox(PChar('Не удалось зарегистрировать OPC-сервер "' + OPCHDAUserServerName +
                         '". Истекло время ожидания на регистрацию сервера.'), 'Ошибка', MB_OK or MB_ICONERROR);
+                      bErrHDA:= true;
                     end;
               end
               else begin
                 Application.MessageBox(PChar('Ошибка регистрации OPC-сервера "' + OPCHDAUserServerName + '"'),
                     'Ошибка', MB_OK or MB_ICONERROR);
+                bErrHDA:= true;
               end;
           end
           else begin
             Application.MessageBox(PChar('Файл "' + PathFileNameOPCHDAServer +
               '" не найден. Невозможно зарегистрировать OPC HDA сервер.'),
               'Ошибка', MB_OK or MB_ICONERROR);
+            bErrHDA:= true;
           end;
 
       FormSettingsWorkStation.ReadOPCServerName;
@@ -142,14 +123,14 @@ begin
       if (CheckBoxDA.Checked and (not bErrDA)) or (CheckBoxHDA.Checked and (not bErrHDA)) then
         begin
           if CheckBoxDA.Checked and (not bErrDA) then
-            strText:= '"' + OPCDAUserServerName + '"';
+            strText:= #10#13 + '"' + OPCDAUserServerName + '"';
           if CheckBoxHDA.Checked and (not bErrHDA) then
             begin
-              if strText = '' then strText:= '"' + OPCHDAUserServerName + '"'
-                              else strText:= strText + ' и "' + OPCHDAUserServerName + '"';
+              if strText = '' then strText:= #10#13 + '"' + OPCHDAUserServerName + '"'
+                              else strText:= strText + #10#13 + '"' + OPCHDAUserServerName + '"';
             end;
           if strText <> '' then
-            if Application.MessageBox(PChar('СКРП OPC-сервер(ы) ' + strText +
+            if Application.MessageBox(PChar('СКРП OPC-сервер(ы) ' + strText + #10#13 +
                ' успешно зарегистрирован(ы).'), PChar(Caption),
                MB_OK or MB_ICONINFORMATION) = IDOK then close;
         end;
@@ -158,9 +139,37 @@ begin
 
 end;
 
+procedure TFormRegOPCServers.SetEnabledButtonOK;
+  begin
+    ButtonOK.Enabled:= CheckBoxDA.Checked or CheckBoxHDA.Checked;
+  end;
+
+procedure TFormRegOPCServers.CheckBoxDAClick(Sender: TObject);
+begin
+  SetEnabledButtonOK();
+end;
+
+procedure TFormRegOPCServers.CheckBoxHDAClick(Sender: TObject);
+begin
+  SetEnabledButtonOK();
+end;
+
 procedure TFormRegOPCServers.FormCreate(Sender: TObject);
 begin
   Caption:= ProgName_ShortStringVersion + Caption;
+end;
+
+procedure TFormRegOPCServers.FormShow(Sender: TObject);
+var
+  i: Integer;
+  tempServerName: AnsiString;
+  e:TOPCEnum;
+begin
+  CheckBoxDA.Enabled:= e.ProgIDFromCLSID(GUID_RudaOPCDA, tempServerName) <> S_OK;
+  CheckBoxDA.Checked:= false;
+  CheckBoxHDA.Enabled:= e.ProgIDFromCLSID(GUID_RudaOPCHDA, tempServerName) <> S_OK;
+  CheckBoxHDA.Checked:= false;
+  SetEnabledButtonOK();
 end;
 
 end.
