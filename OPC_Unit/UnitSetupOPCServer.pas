@@ -10,7 +10,7 @@ uses
 
 type
   TFormSetupOpcServer = class(TForm)
-    ImageList1: TImageList;
+    ImageListEnabled: TImageList;
     Panel1: TPanel;
     ToolBar1: TToolBar;
     CreateNewOPCserver: TToolButton;
@@ -42,6 +42,7 @@ type
     ToolButton5: TToolButton;
     PopupMenu1: TPopupMenu;
     N1: TMenuItem;
+    ImageListDisabled: TImageList;
 
 
     procedure ButtonCloseClick(Sender: TObject);

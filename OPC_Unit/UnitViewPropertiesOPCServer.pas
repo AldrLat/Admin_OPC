@@ -77,14 +77,14 @@ begin
   case PropertiesOPCServer.TypeServer of
                  0: exit;
      OPC_DA_Server: begin
-                      FormSetupOpcServer.ImageList1.GetIcon(5, Icon);
+                      FormSetupOpcServer.ImageListEnabled.GetIcon(5, Icon);
                       LabelTypeServer.Caption:= 'OPC Data Access v2.05 server';
                       LabelTitleLastUpdate.Visible:= true;
                       LabelLastUpdateTime.Visible:= true;
                       LabelLastUpdateTime.Caption:= DateTimeToStr(PropertiesOPCServer.LastUpdateTime);
                     end;
     OPC_HDA_Server: begin
-                      FormSetupOpcServer.ImageList1.GetIcon(10, Icon);
+                      FormSetupOpcServer.ImageListEnabled.GetIcon(10, Icon);
                       LabelTypeServer.Caption:= 'OPC Historical Data Access v1.2 server';
                       LabelTitleLastUpdate.Visible:= false;
                       LabelLastUpdateTime.Visible:= false;
