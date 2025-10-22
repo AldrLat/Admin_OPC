@@ -5755,27 +5755,27 @@ object FormSetupOpcServer: TFormSetupOpcServer
         ImageIndex = 4
         Style = tbsSeparator
       end
-      object ToolButton3: TToolButton
+      object ToolButtonExpandNode: TToolButton
         Left = 115
         Top = 0
         Hint = #1056#1072#1079#1074#1077#1088#1085#1091#1090#1100' '#1076#1077#1088#1077#1074#1086' '#1090#1077#1075#1086#1074
         HelpContext = 59
-        Caption = 'ToolButton3'
+        Caption = 'ToolButtonExpandNode'
         ImageIndex = 6
         ParentShowHint = False
         ShowHint = True
-        OnClick = ToolButton3Click
+        OnClick = ToolButtonExpandNodeClick
       end
-      object ToolButton4: TToolButton
+      object ToolButtonCollapseNode: TToolButton
         Left = 140
         Top = 0
         Hint = #1057#1074#1077#1088#1085#1091#1090#1100' '#1076#1077#1088#1077#1074#1086' '#1090#1077#1075#1086#1074
         HelpContext = 59
-        Caption = 'ToolButton4'
+        Caption = 'ToolButtonCollapseNode'
         ImageIndex = 7
         ParentShowHint = False
         ShowHint = True
-        OnClick = ToolButton4Click
+        OnClick = ToolButtonCollapseNodeClick
       end
       object ToolButton5: TToolButton
         Left = 165

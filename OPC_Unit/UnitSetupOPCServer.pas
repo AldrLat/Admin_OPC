@@ -37,8 +37,8 @@ type
     TreeViewBrowseTag: TTreeView;
     Label3: TLabel;
     EditServerName: TEdit;
-    ToolButton3: TToolButton;
-    ToolButton4: TToolButton;
+    ToolButtonExpandNode: TToolButton;
+    ToolButtonCollapseNode: TToolButton;
     ToolButton5: TToolButton;
     PopupMenu1: TPopupMenu;
     N1: TMenuItem;
@@ -64,13 +64,14 @@ type
     procedure TreeViewOPCServerChange(Sender: TObject; Node: TTreeNode);
     procedure ClearInfoOPCServer;
     procedure TreeViewOPCServerClick(Sender: TObject);
-    procedure ToolButton3Click(Sender: TObject);
-    procedure ToolButton4Click(Sender: TObject);
+    procedure ToolButtonExpandNodeClick(Sender: TObject);
+    procedure ToolButtonCollapseNodeClick(Sender: TObject);
     procedure CheckBoxOPCServerDAClick(Sender: TObject);
     procedure CheckBoxOPCServerHDAClick(Sender: TObject);
     procedure TreeViewOPCServerMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure N1Click(Sender: TObject);
+    procedure ButtonBrowseTag();
   private
     { Private declarations }
   public
@@ -335,6 +336,7 @@ begin
     end;
   if TreeViewBrowseTag.Items.Count = 0 then
     begin
+
       node:= TreeViewBrowseTag.Items.Add(nil, 'Тегов не обнаружено');
       node.ImageIndex:= 11;
     end;
@@ -490,6 +492,7 @@ procedure TFormSetupOpcServer.ListNodesOPCDAServer(serverName: string);
       DataTypes: TVarType;
 begin
   TreeViewBrowseTag.Items.Clear;
+  ButtonBrowseTag();
   CurrentBranch:= nil;
   try
     // we will use the custom OPC interfaces, and OPCProxy.dll will handle
@@ -571,6 +574,7 @@ begin
         end;
       PropertiesServerDA(ServerIfDA, serverName);
       ServerIfDA:= nil;
+      ButtonBrowseTag();
     end
     else begin
 //    Writeln('Unable to connect to OPC server');
@@ -593,6 +597,7 @@ procedure TFormSetupOpcServer.ListNodesOPCHDAServer(serverName: string);
       ppszAggrDesc:               POleStrList;
 begin
   TreeViewBrowseTag.Items.Clear;
+  ButtonBrowseTag();
   CurrentBranch:= nil;
   try
     // we will use the custom OPC interfaces, and OPCProxy.dll will handle
@@ -633,6 +638,7 @@ begin
         end;
       PropertiesServerHDA(ServerIfHDA, serverName);
       ServerIfHDA:= nil;
+      ButtonBrowseTag();
     end
     else begin
       //ошибка
@@ -645,7 +651,7 @@ begin
   FormPropertiesOPCServer.ShowModal;
 end;
 
-procedure TFormSetupOpcServer.ToolButton3Click(Sender: TObject);
+procedure TFormSetupOpcServer.ToolButtonExpandNodeClick(Sender: TObject);
 begin
   with TreeViewBrowseTag do
    begin
@@ -655,7 +661,7 @@ begin
    end;
 end;
 
-procedure TFormSetupOpcServer.ToolButton4Click(Sender: TObject);
+procedure TFormSetupOpcServer.ToolButtonCollapseNodeClick(Sender: TObject);
 begin
   with TreeViewBrowseTag do
    begin
@@ -765,6 +771,7 @@ begin
   EditGUID.Text:= GUIDtoString(GUID);
   EditUserType.Text:= e.UserTypeFromCLSID(GUID);
   TreeViewBrowseTag.Items.Clear;
+  ButtonBrowseTag();
 end;
 
 procedure TFormSetupOpcServer.TreeViewOPCServerClick(Sender: TObject);
@@ -890,6 +897,13 @@ begin
   EditUserType.Clear;
   EditGUID.Clear;
   TreeViewBrowseTag.Items.Clear;
+  ButtonBrowseTag();
+end;
+
+procedure TFormSetupOpcServer.ButtonBrowseTag();
+begin
+  ToolButtonExpandNode.Enabled:= TreeViewBrowseTag.Items.Count > 0;
+  ToolButtonCollapseNode.Enabled:= TreeViewBrowseTag.Items.Count > 0;
 end;
 
 procedure TFormSetupOpcServer.FormShow(Sender: TObject);
@@ -915,6 +929,7 @@ begin
 
   FirstStart:= false;
   RadioButtonAllOPCServerClick(Sender);
+  ButtonBrowseTag();
 end;
 
 end.
