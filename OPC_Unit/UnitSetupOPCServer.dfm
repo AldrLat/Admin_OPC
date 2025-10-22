@@ -5694,7 +5694,7 @@ object FormSetupOpcServer: TFormSetupOpcServer
       object CreateNewOPCserver: TToolButton
         Left = 0
         Top = 0
-        Hint = #1057#1086#1079#1076#1072#1090#1100' '#1085#1086#1074#1099#1081' '#1057#1050#1056#1055' OPC-'#1089#1077#1088#1074#1077#1088
+        Hint = #1047#1072#1088#1077#1075#1080#1089#1090#1088#1080#1088#1086#1074#1072#1090#1100' '#1057#1050#1056#1055' OPC-'#1089#1077#1088#1074#1077#1088
         HelpContext = 59
         AllowAllUp = True
         ImageIndex = 0
@@ -5705,7 +5705,7 @@ object FormSetupOpcServer: TFormSetupOpcServer
       object ToolButtonDeleteOPCServer: TToolButton
         Left = 25
         Top = 0
-        Hint = #1059#1076#1072#1083#1080#1090#1100' OPC-'#1089#1077#1088#1074#1077#1088
+        Hint = #1059#1076#1072#1083#1080#1090#1100' '#1057#1050#1056#1055' OPC-'#1089#1077#1088#1074#1077#1088
         HelpContext = 59
         Caption = 'ToolButtonDeleteOPCServer'
         ImageIndex = 1

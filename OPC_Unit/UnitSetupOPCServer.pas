@@ -856,6 +856,8 @@ begin
           TreeViewOPCServer.Items.Item[0].Selected:= true;      //ставим на первую позицию
         end
         else EnabledDisabledButton(false);
+
+      CreateNewOPCserver.Enabled:= not ((e.ProgIDFromCLSID(GUID_RudaOPCDA, sTemp) = s_OK) and (e.ProgIDFromCLSID(GUID_RudaOPCHDA, sTemp) = s_OK));
   finally
     ListUserType.Free;
     ListOPCServer.Free;
