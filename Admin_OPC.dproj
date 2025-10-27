@@ -84,8 +84,8 @@
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <BT_BuildType>Debug</BT_BuildType>
         <Icon_MainIcon>..\Icon\ON-icon-_-_-_64x64_png.ico</Icon_MainIcon>
-        <VerInfo_Build>5552</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileVersion=5.0.0.5552;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=5.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Build>5553</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileVersion=5.0.0.5553;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=5.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
         <VerInfo_MajorVer>5</VerInfo_MajorVer>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
@@ -214,7 +214,6 @@
             <Form>FormRegOPCServers</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\RudaMonitor_OPC\OPC_Unit\RudaGlobals.pas"/>
         <DCCReference Include="EnumSerialPorts.pas"/>
         <DCCReference Include="UnitLineSettingsConnection.pas">
             <Form>FormLineSettingsConnection</Form>
@@ -237,6 +236,7 @@
             <Form>FormLoadСoefficients</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\RudaGlobals\RudaGlobals.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
