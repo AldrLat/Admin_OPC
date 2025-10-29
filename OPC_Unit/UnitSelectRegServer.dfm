@@ -2962,6 +2962,7 @@ object FormRegOPCServers: TFormRegOPCServers
     FFFFFC000007FFFFFFFFFFFFFFFFFFFFFFFFFFFC007FFFFFFFFFFFFFFFFF}
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -2978,6 +2979,7 @@ object FormRegOPCServers: TFormRegOPCServers
     Height = 17
     Caption = 'OPC DA (Data Access)'
     TabOrder = 0
+    OnClick = CheckBoxDAClick
   end
   object CheckBoxHDA: TCheckBox
     Left = 56
@@ -2986,6 +2988,7 @@ object FormRegOPCServers: TFormRegOPCServers
     Height = 17
     Caption = 'OPC HDA (Historical Data Access)'
     TabOrder = 1
+    OnClick = CheckBoxHDAClick
   end
   object ButtonOK: TButton
     Left = 114

@@ -39,7 +39,6 @@ uses
   Vcl.Themes,
   Vcl.Styles,
   UnitSelectRegServer in 'OPC_Unit\UnitSelectRegServer.pas' {FormRegOPCServers},
-  RudaGlobals in '..\RudaMonitor_OPC\OPC_Unit\RudaGlobals.pas',
   EnumSerialPorts in 'EnumSerialPorts.pas',
   UnitLineSettingsConnection in 'UnitLineSettingsConnection.pas' {FormLineSettingsConnection},
   ThreadConnectNetSQL in 'ThreadConnectNetSQL.pas',
@@ -47,7 +46,8 @@ uses
   UnitProgressCompressDB in 'UnitProgressCompressDB.pas' {FormProgressCompressDB},
   UnitShowProgressCompressDB in 'UnitShowProgressCompressDB.pas' {FormShowProgressCompressDB},
   ThreadCompressDB in 'ThreadCompressDB.pas',
-  UnitLoadÑoefficients in 'UnitLoadÑoefficients.pas' {FormLoadÑoefficients};
+  UnitLoadÑoefficients in 'UnitLoadÑoefficients.pas' {FormLoadÑoefficients},
+  RudaGlobals in '..\RudaGlobals\RudaGlobals.pas';
 
 {$R *.res}
 //Áëîêèğîâàíèå çàïóñêà âòîğîãî ıêçåìïëÿğà ïğîãğàììû
