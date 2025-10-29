@@ -246,12 +246,12 @@ var
   PathWorkStationMDB, PathDataMDB, PathDataWSMDB, PathAccessMDB, PathServerMDB: string;
   PathServiceRudaWS: string;
   NoErrСreateNewField: boolean; //true - удалось создать поля и таблицы для работы с новой версией СКРП (поддержка OPC)
-                           //false - не удалось создать поля и таблицы для работы с новой версией СКРП (поддержка OPC)
-                           //Создавать поля и таблицы необходимо, чтобы была совместимость с предыдущими версиями BD
+                                //false - не удалось создать поля и таблицы для работы с новой версией СКРП (поддержка OPC)
+                                //Создавать поля и таблицы необходимо, чтобы была совместимость с предыдущими версиями BD
   LevelRecLogRudaMonitor: integer;
   OPCServerGUID: TGUID;
   PathFileNameOPCDAServer: string;   //путь + имя файла OPC DA сервера
-  PathFileNameOPCHDAServer: string;   //путь + имя файла OPC DA сервера
+  PathFileNameOPCHDAServer: string;  //путь + имя файла OPC HDA сервера
   ServerIfDA: IOPCServer;
   ServerIfHDA: IOPCHDA_Server;
   StateProcessCompressDB: TStateCompressDB;     //статус процесса сжатия баз данных
