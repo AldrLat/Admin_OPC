@@ -41,6 +41,27 @@ begin
 end;
 
 procedure TFormRegOPCServers.ButtonOKClick(Sender: TObject);
+
+  procedure RegistrationOPCDAServer();
+    begin
+      if DM.RunAsAdmin(Handle, PathFileNameOPCDAServer, ' /regserver /OPC_DA', hProcess) then
+              begin
+                if hProcess <> 0 then
+                  if WaitForSingleObject(hProcess, 5000) <> WAIT_OBJECT_0 then
+                    begin
+                      CloseHandle(hProcess);
+                      Application.MessageBox(PChar('Не удалось зарегистрировать OPC-сервер "' + OPCDAUserServerName +
+                        '". Истекло время ожидания на регистрацию сервера.'), 'Ошибка', MB_OK or MB_ICONERROR);
+                      bErrDA:= true;
+                    end;
+              end
+              else begin
+                Application.MessageBox(PChar('Ошибка регистрации OPC-сервера "' + OPCDAUserServerName + '"'),
+                    'Ошибка', MB_OK or MB_ICONERROR);
+                bErrDA:= true;
+              end;
+    end;
+
   var tempServerName: AnsiString;
       e:TOPCEnum;
       hProcess: THandle;
@@ -65,22 +86,15 @@ begin
       if CheckBoxDA.Checked then //регистрируем DA сервер
         if FileExists(PathFileNameOPCDAServer) then
           begin
-            if DM.RunAsAdmin(Handle, PathFileNameOPCDAServer, ' /regserver /OPC_DA', hProcess) then
-              begin
-                if hProcess <> 0 then
-                  if WaitForSingleObject(hProcess, 5000) <> WAIT_OBJECT_0 then
-                    begin
-                      CloseHandle(hProcess);
-                      Application.MessageBox(PChar('Не удалось зарегистрировать OPC-сервер "' + OPCDAUserServerName +
-                        '". Истекло время ожидания на регистрацию сервера.'), 'Ошибка', MB_OK or MB_ICONERROR);
-                      bErrDA:= true;
-                    end;
-              end
-              else begin
-                Application.MessageBox(PChar('Ошибка регистрации OPC-сервера "' + OPCDAUserServerName + '"'),
-                    'Ошибка', MB_OK or MB_ICONERROR);
-                bErrDA:= true;
-              end;
+            //проверяем запущен ли опрос
+            if DM.IsRunning(FileNameRudaMonitor) then
+            begin
+              RegistrationOPCDAServer();
+            end
+            else
+            begin
+              RegistrationOPCDAServer();
+            end;
           end
           else begin
             Application.MessageBox(PChar('Файл "' + PathFileNameOPCDAServer +
