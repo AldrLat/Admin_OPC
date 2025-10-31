@@ -93,6 +93,8 @@ procedure TFormRegOPCServers.ButtonOKClick(Sender: TObject);
       e:TOPCEnum;
       strText: string;
       bErrDA, bErrHDA: boolean;    //TRUE - значит есть ошибка
+      SrvRun: boolean;
+      hProcess: THandle;
 
 begin
   strText:= '';
@@ -116,6 +118,16 @@ begin
             //проверяем запущен ли опрос
             if DM.IsRunning(FileNameRudaMonitor) then
             begin
+              //проверяем запущен ли сервис
+              SrvRun:= DM.ServiceRunning(nil, ServiceName);
+              //если запущен -> приостанавливаем
+              if SrvRun then DM.RunAsAdmin(Handle, 'net', 'pause ' + ServiceName, hProcess);
+              //даем команду опросу RudaMonitor завершить работу
+              DM.RebootMonitor();
+
+
+
+
               bErrDA:= RegistrationOPCDAServer();
             end
             else

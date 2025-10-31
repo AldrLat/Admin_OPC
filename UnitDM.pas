@@ -203,7 +203,7 @@ type
     function CountWin: integer;
     function ServiceGetStatus(sMachine, sService: PChar): DWORD;
     function ServiceRunning(sMachine, sService: PChar): boolean;
-    procedure RebootMonitor;
+    procedure RebootMonitor();
     procedure ListLineChannel(Lines: TLines; var LinesChannels: TLinesChannels; var UsedChannels: TUsedChannels; sCaption: string);
     procedure ListLine(var Lines: TLines; sCaption: string);     //список конвейеров по порядку (номера L_Code)
     procedure PrintChart(Chart: TChart; sTitle1, sTitle2, sTitle3, PrinTitle: string);
@@ -1106,9 +1106,9 @@ end;
 ////        ParamString, 1, ParamFloat, ParamBoolean);
 //end;
 
-procedure TDM.RebootMonitor; //устанавливаем 1 - признак для перезагрузки Монитора
+procedure TDM.RebootMonitor(); //устанавливаем 1 - признак для перезагрузки Монитора
 begin
-  WriteToRegVariant(RootKey_HKCU, SubKey, 'Settings', 'ChangeSetting', 1);
+  WriteToRegVariant(RootKey_HKCU, SubKey, 'Settings', 'ChangeSetting', Reboot);
 end;
 
 function TDM.ServiceGetStatus(sMachine, sService: PChar): DWORD;
