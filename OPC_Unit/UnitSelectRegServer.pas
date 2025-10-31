@@ -95,7 +95,8 @@ procedure TFormRegOPCServers.ButtonOKClick(Sender: TObject);
       bErrDA, bErrHDA: boolean;    //TRUE - значит есть ошибка
       SrvRun: boolean;
       hProcess: THandle;
-
+      i: integer;
+      waitendprocess: boolean;
 begin
   strText:= '';
   bErrDA:= false;
@@ -124,8 +125,16 @@ begin
               if SrvRun then DM.RunAsAdmin(Handle, 'net', 'pause ' + ServiceName, hProcess);
               //даем команду опросу RudaMonitor завершить работу
               DM.RebootMonitor();
-
-
+              //ожидаем завершение RudaMonitor
+              i:= 0;
+              waitendprocess:= true;
+              while DM.IsRunning(FileNameRudaMonitor) and waitendprocess do
+              begin
+                waitendprocess:= i < 20;
+                sleep(100);
+                Application.ProcessMessages();
+                inc(i);
+              end;
 
 
               bErrDA:= RegistrationOPCDAServer();
