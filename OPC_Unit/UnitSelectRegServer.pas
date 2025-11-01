@@ -119,25 +119,31 @@ begin
             //проверяем запущен ли опрос
             if DM.IsRunning(FileNameRudaMonitor) then
             begin
-              //проверяем запущен ли сервис
-              SrvRun:= DM.ServiceRunning(nil, ServiceName);
-              //если запущен -> приостанавливаем
-              if SrvRun then DM.RunAsAdmin(Handle, 'net', 'pause ' + ServiceName, hProcess);
-              //даем команду опросу RudaMonitor завершить работу
-              DM.RebootMonitor();
-              //ожидаем завершение RudaMonitor
-              i:= 0;
-              waitendprocess:= true;
-              while DM.IsRunning(FileNameRudaMonitor) and waitendprocess do
-              begin
-                waitendprocess:= i < 20;
-                sleep(100);
-                Application.ProcessMessages();
-                inc(i);
-              end;
+              Application.MessageBox(PChar('Для регистрации OPCDA сервера ' +
+                '"' + OPCDAUserServerName + '"' + ', необходимо закрыть программу ' +
+              'Сбор и обработка данных - "' + ChangeFileExt(FileNameRudaMonitor,'') + '"!!!'),
+                             PChar(ProgName_ShortStringVersion + ' ВНИМАНИЕ !!!'),
+                             MB_OK or MB_ICONWARNING);
+              bErrDA:= true;
+//              //проверяем запущен ли сервис
+//              SrvRun:= DM.ServiceRunning(nil, ServiceName);
+//              //если запущен -> приостанавливаем
+//              if SrvRun then DM.RunAsAdmin(Handle, 'net', 'pause ' + ServiceName, hProcess);
+//              //даем команду опросу RudaMonitor завершить работу
+//              DM.RebootMonitor();
+//              //ожидаем завершение RudaMonitor
+//              i:= 0;
+//              waitendprocess:= true;
+//              while DM.IsRunning(FileNameRudaMonitor) and waitendprocess do
+//              begin
+//                waitendprocess:= i < 20;
+//                sleep(100);
+//                Application.ProcessMessages();
+//                inc(i);
+//              end;
 
 
-              bErrDA:= RegistrationOPCDAServer();
+//              bErrDA:= RegistrationOPCDAServer();
             end
             else
             begin
