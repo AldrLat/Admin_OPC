@@ -6,7 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Data.Win.ADODB, Vcl.Grids, UnitDM,
   Vcl.DBGrids, Vcl.StdCtrls, Vcl.Samples.Spin, Vcl.Buttons, UnitMyForm, RudaGlobals,
-  tlhelp32, Vcl.ComCtrls, Vcl.ExtCtrls{обязательно ПОСЛЕДНИМ};
+  Vcl.ComCtrls,
+  Vcl.ExtCtrls{обязательно ПОСЛЕДНИМ};
 
 type
   PCOMPort = ^TCOMPort;
@@ -374,35 +375,6 @@ begin
   ListControllers(Controllers);
 end;
 
-function IsRunning(sName: string): boolean; // проверяет, запущен ли процесс sName
-var
-  han: THandle;
-  ProcStruct: PROCESSENTRY32; // from "tlhelp32" in uses clause
-  sID: string;
-begin
-  Result := false;
-  // Get a snapshot of the system
-  han := CreateToolhelp32Snapshot(TH32CS_SNAPALL, 0);
-  if han = 0 then exit;
-  // Loop thru the processes until we find it or hit the end
-  ProcStruct.dwSize := sizeof(PROCESSENTRY32);
-  if Process32First(han, ProcStruct) then
-  begin
-    repeat
-      sID := ExtractFileName(ProcStruct.szExeFile);
-      // Check only against the portion of the name supplied, ignoring case
-      if uppercase(copy(sId, 1, length(sName))) = uppercase(sName) then
-      begin
-        // Report we found it
-        Result := true;
-        Break;
-      end;
-    until not Process32Next(han, ProcStruct);
-  end;
-  // clean-up
-  CloseHandle(han);
-end;
-
 //используется ли данный канал контроллера на конвейере, который подключен к системе (конвейер подключен к системе)
 function ByChannelNumberUsedOnLine(NumberChannel: byte): boolean;
   var i, j: integer;
@@ -429,7 +401,7 @@ begin
   if DM.FunTypeController <> 3 then exit;  //если не MK003 - выходим.
 
   //проверяем запущен ли опрос
-  if not IsRunning(FileNameRudaMonitor) then exit;  //если опрос не запущен
+  if not DM.IsRunning(FileNameRudaMonitor) then exit;  //если опрос не запущен
 
   for i := Low(Controllers) to High(Controllers) do
     if Lc_Code = Controllers[i].LcCode then   //нужный контроллер найден

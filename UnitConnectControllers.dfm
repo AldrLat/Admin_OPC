@@ -158,6 +158,10 @@
         OnChange = PageControl1Change
         object TabSheet1: TTabSheet
           Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099' '#1082#1086#1085#1090#1088#1086#1083#1083#1077#1088#1072
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object StringGridParamControllers: TStringGrid
             Left = 0
             Top = 0
@@ -186,6 +190,10 @@
         object TabSheet2: TTabSheet
           Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099' '#1083#1080#1085#1080#1080' '#1089#1074#1103#1079#1080
           ImageIndex = 1
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object StringGridParamLineConnection: TStringGrid
             Left = 0
             Top = 0
@@ -214,6 +222,10 @@
         object TabSheetDataController: TTabSheet
           Caption = #1044#1072#1085#1085#1099#1077' '#1082#1086#1085#1090#1088#1086#1083#1083#1077#1088#1072
           ImageIndex = 2
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object Label5: TLabel
             Left = 40
             Top = 41

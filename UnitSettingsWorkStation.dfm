@@ -765,6 +765,10 @@ object FormSettingsWorkStation: TFormSettingsWorkStation
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Label9: TLabel
           Left = 170
           Top = 11
@@ -879,6 +883,10 @@ object FormSettingsWorkStation: TFormSettingsWorkStation
       object TabSheet_TXT: TTabSheet
         Caption = '*.txt'
         ImageIndex = 1
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Label16: TLabel
           Left = 13
           Top = 134
@@ -1003,6 +1011,10 @@ object FormSettingsWorkStation: TFormSettingsWorkStation
         HelpContext = 35
         Caption = 'SQL'
         ImageIndex = 2
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Label18: TLabel
           Left = 164
           Top = 11
@@ -1383,6 +1395,10 @@ object FormSettingsWorkStation: TFormSettingsWorkStation
       object TabSheet_OPC: TTabSheet
         Caption = 'OPC-'#1089#1077#1088#1074#1077#1088
         ImageIndex = 5
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Label32: TLabel
           Left = 194
           Top = 11
