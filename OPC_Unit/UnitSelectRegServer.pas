@@ -161,7 +161,18 @@ begin
       if CheckBoxHDA.Checked then //регистрируем HDA сервер
         if FileExists(PathFileNameOPCHDAServer) then
           begin
-            bErrHDA:= RegistrationOPCHDAServer();
+            //проверяем запущен ли OPCHDA
+            if (DM.IsRunning(FileNameOPCHDAServer)) and (DM.KillTask(FileNameOPCHDAServer) <> 1) then
+            begin
+                Application.MessageBox(PChar('Для регистрации OPCHDA сервера ' +
+                  '"' + OPCHDAUserServerName + '"' + ', необходимо закрыть в трее программу ' +
+                  OPCHDAServerDescription + ' "' + ChangeFileExt(FileNameOPCHDAServer,'') + '"!!!'),
+                             PChar(ProgName_ShortStringVersion + ' ВНИМАНИЕ !!!'),
+                             MB_OK or MB_ICONWARNING);
+                bErrHDA:= true;
+
+            end
+            else bErrHDA:= RegistrationOPCHDAServer();
           end
           else
           begin
