@@ -136,7 +136,6 @@ type
     ContrName: array [0..255] of Char;          //имя контроллера
   end;
 
-  TLinesChannels = array [0.. MAXCHANNEL - 1] of TMapLines;
   TUsedChannels  = array [0..MAXCHANNEL] of word;         //список каналов (если канал задействован ставим 1), последнее значение - общее число используемых каналов
   TLines = array [0.. MAXLINE] of byte;                   //список кодов подключенных конвейеров (по порядку), последний байт - общее число конвейеров
   TControllers = array [0..MAXCHANNEL - 1] of TController;

@@ -5073,6 +5073,7 @@ object FormDlgConnect: TFormDlgConnect
     000000000000FC4F0000FC070000E8030000C00300008001000080000000C000
     000001C1000003C100000781000002010000000700008007000080070000803F
     0000E07F0000}
+  OldCreateOrder = True
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -5080,6 +5081,7 @@ object FormDlgConnect: TFormDlgConnect
   DesignSize = (
     721
     402)
+  PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
     Left = 16
@@ -5317,9 +5319,9 @@ object FormDlgConnect: TFormDlgConnect
         Width = 203
         Height = 73
         HelpContext = 57
+        OnClickCheck = CheckListBoxWeigherListClickCheck
         ItemHeight = 13
         TabOrder = 4
-        OnClickCheck = CheckListBoxWeigherListClickCheck
       end
       object EditMax2: TEdit
         Left = 414

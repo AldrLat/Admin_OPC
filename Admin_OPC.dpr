@@ -47,7 +47,8 @@ uses
   UnitShowProgressCompressDB in 'UnitShowProgressCompressDB.pas' {FormShowProgressCompressDB},
   ThreadCompressDB in 'ThreadCompressDB.pas',
   UnitLoadÑoefficients in 'UnitLoadÑoefficients.pas' {FormLoadÑoefficients},
-  RudaGlobals in '..\RudaGlobals\RudaGlobals.pas';
+  RudaGlobals in '..\RudaGlobals\RudaGlobals.pas',
+  OPCerror in '..\OPC\OPCerror.pas';
 
 {$R *.res}
 //Áëîêèğîâàíèå çàïóñêà âòîğîãî ıêçåìïëÿğà ïğîãğàììû

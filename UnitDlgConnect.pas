@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Data.DB,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Data.DB, RudaGlobals,
   Vcl.Grids, Vcl.DBGrids, Vcl.Buttons, Data.Win.ADODB, Vcl.CheckLst,
   Vcl.Samples.Spin, UnitDM, UnitMyForm{обязательно ПОСЛЕДНИМ};
 
@@ -154,7 +154,7 @@ var
   CmpName: string;
 
 implementation
-uses MainUnit, UnitConfigWorkStation, RudaGlobals;
+uses MainUnit, UnitConfigWorkStation;
 {$R *.dfm}
 
 constructor TConnectControllers.Create(const Lc_Code: Int64; const Cn_Code: Int64;
