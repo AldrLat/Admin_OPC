@@ -690,24 +690,41 @@ begin
         begin
           if FileExists(PathFileNameOPCDAServer) then
             begin
-//          if DM.RunAsAdmin(Handle, PathFileNameOPCServer, Trim(Node.Text) + ' ' +
-//                                              GUIDToString(CLASS_DA3) +
-//                                              ' /unregserver', hProcess) then
-              if DM.RunAsAdmin(Handle, PathFileNameOPCDAServer, ' /unregserver /OPC_DA', hProcess) then
-                begin
-                  if hProcess <> 0 then
-                    if WaitForSingleObject(hProcess, 5000) <> WAIT_OBJECT_0 then
-                      begin
-                        CloseHandle(hProcess);
-                        Application.MessageBox(PChar('Не удалось удалить OPC-сервер "' + ServerName +
-                          '". Истекло время ожидания на удаление сервера.'), 'Ошибка', MB_OK or MB_ICONERROR);
-                        DelOk:= false;
-                      end;
-                end
-                else begin
-                  DM.log('Ошибка удаления OPC-сервера "' + ServerName + '"', 0);
-                  DelOk:= false;
-                end;
+              //проверяем запущен ли опрос
+              if DM.IsRunning(FileNameRudaMonitor) then
+              begin
+                Application.MessageBox(PChar('Для удаления OPCDA сервера ' +
+                  '"' + OPCDAUserServerName + '"' + ', необходимо закрыть программу ' +
+                  'Сбор и обработка данных - "' + ChangeFileExt(FileNameRudaMonitor,'') + '"!!!'),
+                             PChar(ProgName_ShortStringVersion + ' ВНИМАНИЕ !!!'),
+                             MB_OK or MB_ICONWARNING);
+                DelOk:= false;
+              end
+              else
+              begin
+                //if DM.RunAsAdmin(Handle, PathFileNameOPCServer, Trim(Node.Text) + ' ' +
+                //                 GUIDToString(CLASS_DA3) +
+                //                 ' /unregserver', hProcess) then
+
+
+                if DM.RunAsAdmin(Handle, PathFileNameOPCDAServer, ' /unregserver /OPC_DA', hProcess) then
+                  begin
+                    if hProcess <> 0 then
+                      if WaitForSingleObject(hProcess, 5000) <> WAIT_OBJECT_0 then
+                        begin
+                          CloseHandle(hProcess);
+                          Application.MessageBox(PChar('Не удалось удалить OPC-сервер "' + ServerName +
+                            '". Истекло время ожидания на удаление сервера.'), 'Ошибка', MB_OK or MB_ICONERROR);
+                          DelOk:= false;
+                        end;
+                  end
+                  else
+                  begin
+                    DM.log('Ошибка удаления OPC-сервера "' + ServerName + '"', 0);
+                    DelOk:= false;
+                  end;
+              end;
+
             end
             else begin
               Application.MessageBox(PChar('Файл "' + PathFileNameOPCDAServer +
@@ -721,21 +738,35 @@ begin
         begin
           if FileExists(PathFileNameOPCHDAServer) then
             begin
-              if DM.RunAsAdmin(Handle, PathFileNameOPCHDAServer, ' /unregserver /OPC_HDA', hProcess) then
-                begin
-                  if hProcess <> 0 then
-                    if WaitForSingleObject(hProcess, 5000) <> WAIT_OBJECT_0 then
-                      begin
-                        CloseHandle(hProcess);
-                        Application.MessageBox(PChar('Не удалось удалить OPC-сервер "' + ServerName +
-                          '". Истекло время ожидания на удаление сервера.'), 'Ошибка', MB_OK or MB_ICONERROR);
-                        DelOk:= false;
-                      end;
-                end
-                else begin
-                  DM.log('Ошибка удаления OPC-сервера "' + ServerName + '"', 0);
-                  DelOk:= false;
-                end;
+              //проверяем запущен ли OPCHDA
+              if (DM.IsRunning(FileNameOPCHDAServer)) and (DM.KillTask(FileNameOPCHDAServer) <> 1) then
+              begin
+                Application.MessageBox(PChar('Для удаления OPCHDA сервера ' +
+                  '"' + OPCHDAUserServerName + '"' + ', необходимо закрыть в трее программу ' +
+                  OPCHDAServerDescription + ' "' + ChangeFileExt(FileNameOPCHDAServer,'') + '"!!!'),
+                             PChar(ProgName_ShortStringVersion + ' ВНИМАНИЕ !!!'),
+                             MB_OK or MB_ICONWARNING);
+                DelOk:= false;
+              end
+              else
+              begin
+                if DM.RunAsAdmin(Handle, PathFileNameOPCHDAServer, ' /unregserver /OPC_HDA', hProcess) then
+                  begin
+                    if hProcess <> 0 then
+                      if WaitForSingleObject(hProcess, 5000) <> WAIT_OBJECT_0 then
+                        begin
+                          CloseHandle(hProcess);
+                          Application.MessageBox(PChar('Не удалось удалить OPC-сервер "' + ServerName +
+                            '". Истекло время ожидания на удаление сервера.'), 'Ошибка', MB_OK or MB_ICONERROR);
+                          DelOk:= false;
+                        end;
+                  end
+                  else
+                  begin
+                    DM.log('Ошибка удаления OPC-сервера "' + ServerName + '"', 0);
+                    DelOk:= false;
+                  end;
+              end
             end
             else begin
               Application.MessageBox(PChar('Файл "' + PathFileNameOPCHDAServer +
@@ -744,6 +775,7 @@ begin
               exit;
             end;
         end;
+
       ToolButtonRefreshListOPCServersClick(Sender);
       if DelOk then
         Application.MessageBox(PChar('OPC-сервер "' + ServerName + '" успешно удален.'),

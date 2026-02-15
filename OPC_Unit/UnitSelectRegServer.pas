@@ -41,11 +41,62 @@ begin
 end;
 
 procedure TFormRegOPCServers.ButtonOKClick(Sender: TObject);
+  //Если ошибка регистрации возвращает - TRUE, если нет ошибок - FALSE
+  function RegistrationOPCDAServer(): boolean;
+    var hProcess: THandle;
+    begin
+      if DM.RunAsAdmin(Handle, PathFileNameOPCDAServer, ' /regserver /OPC_DA', hProcess) then
+      begin
+        if hProcess <> 0 then
+          if WaitForSingleObject(hProcess, 5000) <> WAIT_OBJECT_0 then
+            begin
+              CloseHandle(hProcess);
+              Application.MessageBox(PChar('Не удалось зарегистрировать OPC-сервер "' + OPCDAUserServerName +
+                        '". Истекло время ожидания на регистрацию сервера.'), 'Ошибка', MB_OK or MB_ICONERROR);
+              result:= true;
+            end
+            else result:= false;
+      end
+      else
+      begin
+        Application.MessageBox(PChar('Ошибка регистрации OPC-сервера "' + OPCDAUserServerName + '"'),
+                    'Ошибка', MB_OK or MB_ICONERROR);
+        result:= true;
+      end;
+    end;
+
+  //Если ошибка регистрации возвращает - TRUE, если нет ошибок - FALSE
+  function RegistrationOPCHDAServer(): boolean;
+    var hProcess: THandle;
+  begin
+    if DM.RunAsAdmin(Handle, PathFileNameOPCHDAServer, ' /regserver /OPC_HDA', hProcess) then
+    begin
+      if hProcess <> 0 then
+        if WaitForSingleObject(hProcess, 5000) <> WAIT_OBJECT_0 then
+        begin
+          CloseHandle(hProcess);
+          Application.MessageBox(PChar('Не удалось зарегистрировать OPC-сервер "' + OPCHDAUserServerName +
+                        '". Истекло время ожидания на регистрацию сервера.'), 'Ошибка', MB_OK or MB_ICONERROR);
+          result:= true;
+        end
+        else result:= false;
+    end
+    else
+    begin
+      Application.MessageBox(PChar('Ошибка регистрации OPC-сервера "' + OPCHDAUserServerName + '"'),
+                    'Ошибка', MB_OK or MB_ICONERROR);
+      result:= true;
+    end;
+  end;
+
   var tempServerName: AnsiString;
       e:TOPCEnum;
-      hProcess: THandle;
       strText: string;
       bErrDA, bErrHDA: boolean;    //TRUE - значит есть ошибка
+      SrvRun: boolean;
+      hProcess: THandle;
+      i: integer;
+      waitendprocess: boolean;
 begin
   strText:= '';
   bErrDA:= false;
@@ -65,24 +116,42 @@ begin
       if CheckBoxDA.Checked then //регистрируем DA сервер
         if FileExists(PathFileNameOPCDAServer) then
           begin
-            if DM.RunAsAdmin(Handle, PathFileNameOPCDAServer, ' /regserver /OPC_DA', hProcess) then
-              begin
-                if hProcess <> 0 then
-                  if WaitForSingleObject(hProcess, 5000) <> WAIT_OBJECT_0 then
-                    begin
-                      CloseHandle(hProcess);
-                      Application.MessageBox(PChar('Не удалось зарегистрировать OPC-сервер "' + OPCDAUserServerName +
-                        '". Истекло время ожидания на регистрацию сервера.'), 'Ошибка', MB_OK or MB_ICONERROR);
-                      bErrDA:= true;
-                    end;
-              end
-              else begin
-                Application.MessageBox(PChar('Ошибка регистрации OPC-сервера "' + OPCDAUserServerName + '"'),
-                    'Ошибка', MB_OK or MB_ICONERROR);
-                bErrDA:= true;
-              end;
+            //проверяем запущен ли опрос
+            if DM.IsRunning(FileNameRudaMonitor) then
+            begin
+              Application.MessageBox(PChar('Для регистрации OPCDA сервера ' +
+                '"' + OPCDAUserServerName + '"' + ', необходимо закрыть программу ' +
+              'Сбор и обработка данных - "' + ChangeFileExt(FileNameRudaMonitor,'') + '"!!!'),
+                             PChar(ProgName_ShortStringVersion + ' ВНИМАНИЕ !!!'),
+                             MB_OK or MB_ICONWARNING);
+              bErrDA:= true;
+//              //проверяем запущен ли сервис
+//              SrvRun:= DM.ServiceRunning(nil, ServiceName);
+//              //если запущен -> приостанавливаем
+//              if SrvRun then DM.RunAsAdmin(Handle, 'net', 'pause ' + ServiceName, hProcess);
+//              //даем команду опросу RudaMonitor завершить работу
+//              DM.RebootMonitor();
+//              //ожидаем завершение RudaMonitor
+//              i:= 0;
+//              waitendprocess:= true;
+//              while DM.IsRunning(FileNameRudaMonitor) and waitendprocess do
+//              begin
+//                waitendprocess:= i < 20;
+//                sleep(100);
+//                Application.ProcessMessages();
+//                inc(i);
+//              end;
+
+
+//              bErrDA:= RegistrationOPCDAServer();
+            end
+            else
+            begin
+              bErrDA:= RegistrationOPCDAServer();
+            end;
           end
-          else begin
+          else
+          begin
             Application.MessageBox(PChar('Файл "' + PathFileNameOPCDAServer +
               '" не найден. Невозможно зарегистрировать OPC DA сервер.'),
               'Ошибка', MB_OK or MB_ICONERROR);
@@ -92,24 +161,21 @@ begin
       if CheckBoxHDA.Checked then //регистрируем HDA сервер
         if FileExists(PathFileNameOPCHDAServer) then
           begin
-            if DM.RunAsAdmin(Handle, PathFileNameOPCHDAServer, ' /regserver /OPC_HDA', hProcess) then
-              begin
-                if hProcess <> 0 then
-                  if WaitForSingleObject(hProcess, 5000) <> WAIT_OBJECT_0 then
-                    begin
-                      CloseHandle(hProcess);
-                      Application.MessageBox(PChar('Не удалось зарегистрировать OPC-сервер "' + OPCHDAUserServerName +
-                        '". Истекло время ожидания на регистрацию сервера.'), 'Ошибка', MB_OK or MB_ICONERROR);
-                      bErrHDA:= true;
-                    end;
-              end
-              else begin
-                Application.MessageBox(PChar('Ошибка регистрации OPC-сервера "' + OPCHDAUserServerName + '"'),
-                    'Ошибка', MB_OK or MB_ICONERROR);
+            //проверяем запущен ли OPCHDA
+            if (DM.IsRunning(FileNameOPCHDAServer)) and (DM.KillTask(FileNameOPCHDAServer) <> 1) then
+            begin
+                Application.MessageBox(PChar('Для регистрации OPCHDA сервера ' +
+                  '"' + OPCHDAUserServerName + '"' + ', необходимо закрыть в трее программу ' +
+                  OPCHDAServerDescription + ' "' + ChangeFileExt(FileNameOPCHDAServer,'') + '"!!!'),
+                             PChar(ProgName_ShortStringVersion + ' ВНИМАНИЕ !!!'),
+                             MB_OK or MB_ICONWARNING);
                 bErrHDA:= true;
-              end;
+
+            end
+            else bErrHDA:= RegistrationOPCHDAServer();
           end
-          else begin
+          else
+          begin
             Application.MessageBox(PChar('Файл "' + PathFileNameOPCHDAServer +
               '" не найден. Невозможно зарегистрировать OPC HDA сервер.'),
               'Ошибка', MB_OK or MB_ICONERROR);

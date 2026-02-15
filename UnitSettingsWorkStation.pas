@@ -598,7 +598,7 @@ begin
               FormSettingsWorkStation.Caption, 'SaveDataInBD', false) then exit;
             end;
         end;
-      DM.RebootMonitor;
+      DM.RebootMonitor();
     end;
   CheckBoxChangePasswordUser.Checked:= false;
   CheckBoxChangePasswordUserClick(Sender);
@@ -625,7 +625,7 @@ begin
           SpeedButtonTestConnection.Hint:= TestConnectionHintEnabled;
           WriteToRegVariant(RootKey_HKCU, SubKey, 'Settings', 'TestConnectionInterval', SpinEditTimeTestConnection.Value);
           WriteToRegVariant(RootKey_HKCU, SubKey, 'Settings', 'TestConnection', SpeedButtonTestConnection.Down);
-          DM.RebootMonitor;
+          DM.RebootMonitor();
         end
         else SpeedButtonTestConnection.Down:= not SpeedButtonTestConnection.Down;
     end
@@ -639,7 +639,7 @@ begin
           SpeedButtonTestConnection.Hint:= TestConnectionHintDisable;
           WriteToRegVariant(RootKey_HKCU, SubKey, 'Settings', 'TestConnectionInterval', SpinEditTimeTestConnection.Value);
           WriteToRegVariant(RootKey_HKCU, SubKey, 'Settings', 'TestConnection', SpeedButtonTestConnection.Down);
-          DM.RebootMonitor;
+          DM.RebootMonitor();
         end
         else SpeedButtonTestConnection.Down:= not SpeedButtonTestConnection.Down;
     end;
@@ -653,7 +653,7 @@ begin
   if SpinEditTimeTestConnection.Value > SpinEditTimeTestConnection.MaxValue then
     SpinEditTimeTestConnection.Value:= SpinEditTimeTestConnection.MaxValue;
   WriteToRegVariant(RootKey_HKCU, SubKey, 'Settings',
-                       'TestConnectionInterval', SpinEditTimeTestConnection.Value);
+    'TestConnectionInterval', SpinEditTimeTestConnection.Value);
 end;
 
 procedure TFormSettingsWorkStation.ButtonCancelClick(Sender: TObject);

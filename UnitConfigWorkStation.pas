@@ -1299,7 +1299,7 @@ begin
       finally
 
       end;
-      if RebootMonitor then DM.RebootMonitor;
+      if RebootMonitor then DM.RebootMonitor();
     end;
   ProcedureChangeData(false, false);
   RebootMonitor:= false; //делаем принудительно, т.к. если до этого был в true, то через процедуру ProcedureChangeData false установить нельзя

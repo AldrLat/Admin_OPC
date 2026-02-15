@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Classes, Vcl.Controls, Vcl.Forms, Winapi.Windows, Data.DB,
   Data.Win.ADODB, System.Variants, Vcl.ComCtrls, Registry, WinSvc, OPCDA, OPCHDA, Vcl.StdCtrls,
   Vcl.Graphics, Winapi.Messages, Printers, VCLTee.Chart, Vcl.Dialogs, Winapi.ShellAPI,
-  RudaGlobals;
+  TlHelp32, RudaGlobals;
 
 const
       DefaultColorEdit = $00DEC4B0; //clCream; //цвет объектов в режиме редактирования
@@ -136,7 +136,6 @@ type
     ContrName: array [0..255] of Char;          //имя контроллера
   end;
 
-  TLinesChannels = array [0.. MAXCHANNEL - 1] of TMapLines;
   TUsedChannels  = array [0..MAXCHANNEL] of word;         //список каналов (если канал задействован ставим 1), последнее значение - общее число используемых каналов
   TLines = array [0.. MAXLINE] of byte;                   //список кодов подключенных конвейеров (по порядку), последний байт - общее число конвейеров
   TControllers = array [0..MAXCHANNEL - 1] of TController;
@@ -203,7 +202,7 @@ type
     function CountWin: integer;
     function ServiceGetStatus(sMachine, sService: PChar): DWORD;
     function ServiceRunning(sMachine, sService: PChar): boolean;
-    procedure RebootMonitor;
+    procedure RebootMonitor();
     procedure ListLineChannel(Lines: TLines; var LinesChannels: TLinesChannels; var UsedChannels: TUsedChannels; sCaption: string);
     procedure ListLine(var Lines: TLines; sCaption: string);     //список конвейеров по порядку (номера L_Code)
     procedure PrintChart(Chart: TChart; sTitle1, sTitle2, sTitle3, PrinTitle: string);
@@ -213,7 +212,8 @@ type
     function FunTypeController: integer;
     function SelectionByControllerType(ControllerID: Int64; TypeController: integer): boolean;   //выбор по типу контроллера
     function SendDataSet(CDS: TCopyDataStruct): integer;  //передать собщение всем окнам
-
+    function IsRunning(sName: string): boolean;
+    function KillTask(ExeFileName: string): Integer;
   private
     { Private declarations }
 
@@ -1106,9 +1106,9 @@ end;
 ////        ParamString, 1, ParamFloat, ParamBoolean);
 //end;
 
-procedure TDM.RebootMonitor; //устанавливаем 1 - признак для перезагрузки Монитора
+procedure TDM.RebootMonitor(); //устанавливаем 1 - признак для перезагрузки Монитора
 begin
-  WriteToRegVariant(RootKey_HKCU, SubKey, 'Settings', 'ChangeSetting', 1);
+  WriteToRegVariant(RootKey_HKCU, SubKey, 'Settings', 'ChangeSetting', Reboot);
 end;
 
 function TDM.ServiceGetStatus(sMachine, sService: PChar): DWORD;
@@ -1402,4 +1402,62 @@ begin
   end;
 end;
 
+function TDM.IsRunning(sName: string): boolean; // проверяет, запущен ли процесс sName
+var
+  han: THandle;
+  ProcStruct: PROCESSENTRY32; // from "tlhelp32" in uses clause
+  sID: string;
+begin
+  Result := false;
+  // Get a snapshot of the system
+  han := CreateToolhelp32Snapshot(TH32CS_SNAPALL, 0);
+  if han = 0 then exit;
+  // Loop thru the processes until we find it or hit the end
+  ProcStruct.dwSize := sizeof(PROCESSENTRY32);
+  if Process32First(han, ProcStruct) then
+  begin
+    repeat
+      sID := ExtractFileName(ProcStruct.szExeFile);
+      // Check only against the portion of the name supplied, ignoring case
+      if uppercase(copy(sId, 1, length(sName))) = uppercase(sName) then
+      begin
+        // Report we found it
+        Result := true;
+        Break;
+      end;
+    until not Process32Next(han, ProcStruct);
+  end;
+  // clean-up
+  CloseHandle(han);
+end;
+
+//Закрывает процесс
+//возвращает количество закрытых процессов
+function TDM.KillTask(ExeFileName: string): Integer;
+const
+  PROCESS_TERMINATE = $0001;
+var
+  ContinueLoop: BOOL;
+  FSnapshotHandle: THandle;
+  FProcessEntry32: TProcessEntry32;
+begin
+  Result := 0;
+  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+  ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
+
+  while Integer(ContinueLoop) <> 0 do
+  begin
+    if ((UpperCase(ExtractFileName(FProcessEntry32.szExeFile)) =
+      UpperCase(ExeFileName)) or (UpperCase(FProcessEntry32.szExeFile) =
+      UpperCase(ExeFileName))) then
+      Result := Integer(TerminateProcess(
+                        OpenProcess(PROCESS_TERMINATE,
+                                    BOOL(0),
+                                    FProcessEntry32.th32ProcessID),
+                                    0));
+     ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
+  end;
+  CloseHandle(FSnapshotHandle);
+end;
 end.
