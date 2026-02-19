@@ -133,7 +133,8 @@ begin
   delete(result, 1, 1);
 end;
 
-function GetDescriptionDA(ItemName: string; Node: TTreeNode; var DataTypes: TVarType): string;
+function GetDescriptionDA(ItemName: string; Node: TTreeNode;
+                          var DataTypes: TVarType; var TemporaryData: RUDADATATYPE): string;
 var OPCItemProperties: IOPCItemProperties;
     i: integer;
     sPath, stEngUnits: string;
@@ -184,6 +185,8 @@ begin
                     //описание Item
                     OPC_PROPERTY_DESCRIPTION: if trim(string(ppvData^[i])) <> '' then
                                                 result:= ' - ' + trim(string(ppvData^[i]));
+
+                    SCRP_OPC_PROPERTY_TEMPORARY_DATA: TemporaryData:= ppvData[i];
                   end;
 
                 end;
@@ -304,6 +307,7 @@ procedure TFormSetupOpcServer.DisplayChildren(OPCBrowse: IOPCBrowse;
       cnt: LongInt;
       CurBranch, node: TTreeNode;
       DataTypes: TVarType;
+      TemporaryData: RUDADATATYPE;
 begin
   TreeViewBrowseTag.Items.BeginUpdate;
   if OPCBrowse <> nil then exit;     //не реализовано
@@ -314,10 +318,13 @@ begin
 
       while EnumString.Next(1,strName, @cnt) = S_OK do
         begin
-          stName:= string(strName) + GetDescriptionDA(string(strName), CurrentBranch, DataTypes);
+          stName:= string(strName) + GetDescriptionDA(string(strName), CurrentBranch, DataTypes, TemporaryData);
           node:= TreeViewBrowseTag.Items.AddChild(CurrentBranch, stName);
-          if DataTypes = VT_BOOL then node.ImageIndex:= 12
-                                 else node.ImageIndex:= 9;
+          case TemporaryData of
+            MOTION_SENSOR: node.ImageIndex:= 12;
+            RUDA_MINUTE..RUDA_MONTH: node.ImageIndex:= 9;
+            SIGN_U1..SIGN_U4: node.ImageIndex:= 13;
+          end;
           node.SelectedIndex:= node.ImageIndex;
         end;
 
@@ -336,7 +343,6 @@ begin
     end;
   if TreeViewBrowseTag.Items.Count = 0 then
     begin
-
       node:= TreeViewBrowseTag.Items.Add(nil, 'Тегов не обнаружено');
       node.ImageIndex:= 11;
     end;
@@ -490,6 +496,7 @@ procedure TFormSetupOpcServer.ListNodesOPCDAServer(serverName: string);
       HR: HResult;
       node: TTreeNode;
       DataTypes: TVarType;
+      TemporaryData: RUDADATATYPE;
 begin
   TreeViewBrowseTag.Items.Clear;
   ButtonBrowseTag();
@@ -533,10 +540,15 @@ begin
                                   OleCheck(HR);
                                   while EnumString.Next(1, strName, nil) = S_OK do
                                     begin
-                                      stName:= string(strName) + GetDescriptionDA(string(strName), CurrentBranch, DataTypes);
+                                      stName:= string(strName) + GetDescriptionDA(string(strName), CurrentBranch, DataTypes, TemporaryData);
                                       node:= TreeViewBrowseTag.Items.AddChild(CurrentBranch, stName);
-                                      if DataTypes = VT_BOOL then node.ImageIndex:= 12
-                                                             else node.ImageIndex:= 9;
+
+                                      case TemporaryData of
+                                        MOTION_SENSOR: node.ImageIndex:= 12;
+                                        RUDA_MINUTE..RUDA_MONTH: node.ImageIndex:= 9;
+                                        SIGN_U1..SIGN_U4: node.ImageIndex:= 13;
+                                      end;
+                                      
                                       node.SelectedIndex:= node.ImageIndex;
                                     end;
                                 end;
