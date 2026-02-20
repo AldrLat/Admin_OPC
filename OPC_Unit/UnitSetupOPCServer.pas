@@ -179,7 +179,7 @@ begin
                 begin
                   case pdwPropertyIDs[i] of
                     //тип Item
-                      OPC_PROPERTY_DATATYPE: DataTypes:= ppvData[i];
+                    OPC_PROPERTY_DATATYPE: DataTypes:= ppvData[i];
                     //единицы измерения
                     OPC_PROPERTY_EU_UNITS: stEngUnits:= trim(string(ppvData^[i]));
                     //описание Item
@@ -190,7 +190,14 @@ begin
                   end;
 
                 end;
-              if stEngUnits <> '' then result:= result + ' (ед. изм. - ' + stEngUnits + ')';
+
+              if stEngUnits <> '' then
+                begin
+                  if TemporaryData in [SIGN_U1..SIGN_U4] then
+                    result:= ' (ед. изм. - ' + stEngUnits + ')'
+                  else
+                    result:= result + ' (ед. изм. - ' + stEngUnits + ')';
+                end;
 
               CoTaskMemFree(ppvData);
               CoTaskMemFree(ppErrors);
@@ -320,6 +327,7 @@ begin
         begin
           stName:= string(strName) + GetDescriptionDA(string(strName), CurrentBranch, DataTypes, TemporaryData);
           node:= TreeViewBrowseTag.Items.AddChild(CurrentBranch, stName);
+
           case TemporaryData of
             MOTION_SENSOR: node.ImageIndex:= 12;
             RUDA_MINUTE..RUDA_MONTH: node.ImageIndex:= 9;
@@ -548,7 +556,6 @@ begin
                                         RUDA_MINUTE..RUDA_MONTH: node.ImageIndex:= 9;
                                         SIGN_U1..SIGN_U4: node.ImageIndex:= 13;
                                       end;
-                                      
                                       node.SelectedIndex:= node.ImageIndex;
                                     end;
                                 end;
